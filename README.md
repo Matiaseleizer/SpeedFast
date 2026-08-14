@@ -86,4 +86,4 @@ Al ejecutar la clase `Main.java`, el sistema genera la siguiente salida formatea
 
 ## 📄 Licencia y Créditos
 
-Desarrollado como actividad formativa para **Duoc UC Online** - Carrera de Ingeniería / Tecnicatura en Desarrollo de Software. Reservados todos los derechos institucionales.
+Desarrollado como actividad formativa para **Duoc UC Online** - Carrera de Analista programador computacional. Reservados todos los derechos institucionales.
