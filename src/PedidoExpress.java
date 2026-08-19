@@ -1,20 +1,17 @@
 
 public class PedidoExpress extends Pedido{
 
-    public PedidoExpress(int idPedido, String direccionEntrega) {
-        super(idPedido, direccionEntrega, " Pedido express ");
+    public PedidoExpress(int idPedido, String direccionEntrega, int distanciaKm) {
+        super(idPedido, direccionEntrega, distanciaKm);
     }
 
     @Override
-    public void asignarRepartidor(){
-        System.out.println(getTipoPedido() + " Asignando repartidor ");
-        System.out.println(" Repartidor mas cercano con disponibilidad inmediata encontrado... ");
+    protected int calcularTiempoEntrega() {
+        if (getDistanciaKm() > 5) {
+            return 10 + 5;
+        }else{
+            return 10 ;
+        }
     }
 
-    //Sobrecarga
-    public void asignarRepartidor(String nombreRepartidor){
-        System.out.println(getTipoPedido() + " asignando repartidor... ");
-        System.out.println("  Repartidor mas cercano con disponibilidad inmediata encontrado... ");
-        System.out.println(" Pedido asignado a: " + nombreRepartidor);
-    }
 }
