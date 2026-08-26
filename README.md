@@ -2,33 +2,37 @@
 
 ![Java](https://img.shields.io/badge/Java-17%2B-orange)
 ![IDE](https://img.shields.io/badge/IDE-IntelliJ%20IDEA-blue)
-![DuocUC](https://img.shields.io/badge/Evaluaci%C3%B3n-Formativa%20Semana%201-003366)
+![DuocUC](https://img.shields.io/badge/Evaluaci%C3%B3n-Formativa-003366)
 
-Proyecto desarrollado para la asignatura **Desarrollo Orientado a Objetos II** de **Duoc UC Online** (Semana 1: *"Explorando la sobrecarga y sobreescritura en clases derivadas"*).
+Proyecto desarrollado para la asignatura **Desarrollo Orientado a Objetos II** de **Duoc UC Online**.
 
-La aplicación modela un sistema de gestión y logística de repartos a domicilio para la empresa **SpeedFast**, aplicando los principios fundamentales de la Programación Orientada a Objetos (POO): **Encapsulamiento**, **Herencia**, **Sobrescritura**, **Sobrecarga** y **Polimorfismo**.
+La aplicación modela un sistema de gestión y logística de repartos a domicilio para la empresa **SpeedFast**, aplicando los principios fundamentales de la Programación Orientada a Objetos (POO): **Abstracción**, **Encapsulamiento**, **Herencia**, **Interfaces**, **Sobrescritura**, **Sobrecarga** y **Polimorfismo**.
 
 ---
 
 ## 📋 Descripción del Caso
 
-**SpeedFast** ofrece tres líneas principales de servicio de reparto a domicilio. Cada tipo de pedido posee requerimientos y criterios de asignación de repartidores diferenciados:
+**SpeedFast** ofrece tres líneas principales de servicio de reparto a domicilio. Cada tipo de pedido posee requerimientos, métodos de asignación y cálculo de tiempo de entrega diferenciados:
 
-* 🍕 **Pedido de Comida:** Requiere verificación obligatoria de repartidor con mochila térmica.
-* 📦 **Pedido de Encomienda:** Requiere proceso de validación de peso y tipo de embalaje.
-* ⚡ **Pedido Express:** Requiere asignación al repartidor más cercano con disponibilidad inmediata.
+* 🍕 **Pedido de Comida:** Tiempo estimado dinámico según la distancia ($15 \text{ min} + 2 \text{ min/km}$), asignación con empaque o bolsa térmica.
+* 📦 **Pedido de Encomienda:** Tiempo estimado para logística de carga ($20 \text{ min} + 1.5 \text{ min/km}$), proceso de despacho desde el centro de distribución.
+* ⚡ **Pedido Express:** Prioridad máxima con tiempos reducidos ajustados según el tramo de distancia.
 
-El sistema utiliza la jerarquía de clases para personalizar el proceso de asignación del repartidor mediante el método `asignarRepartidor()`.
+El sistema utiliza clases abstractas e interfaces para desacoplar el comportamiento (`Despachable`, `Cancelable`, `Rastreable`) y garantizar la trazabilidad de los envíos.
 
 ---
 
 ## 🛠️ Conceptos de Programación Orientada a Objetos Aplicados
 
-1. **Encapsulamiento:** La superclase `Pedido` protege sus atributos privados (`idPedido`, `direccionEntrega`, `tipoPedido`) y expone su acceso/modificación a través de métodos accesores (*getters*) y mutadores (*setters*).
-2. **Herencia:** Las subclases `PedidoComida`, `PedidoEncomienda` y `PedidoExpress` extienden la clase base `Pedido`, heredando sus miembros y reutilizando lógica común a través del constructor `super()`.
-3. **Sobrescritura (`@Override`):** Cada clase derivada redefine el método sin parámetros `asignarRepartidor()` para ejecutar las validaciones requeridas por su modelo de negocio.
-4. **Sobrecarga de Métodos:** Se implementa una segunda firma para el método, `asignarRepartidor(String nombreRepartidor)`, que recibe el nombre del repartidor asignado e imprime la confirmación detallada.
-5. **Polimorfismo:** Permite almacenar distintas instancias (`PedidoComida`, `PedidoEncomienda`, `PedidoExpress`) en una colección de tipo `List<Pedido>` y ejecutar sus comportamientos específicos en tiempo de ejecución.
+1. **Abstracción:** La clase base `Pedido` se define como `abstract` e incluye el método abstracto `calcularTiempoEntrega()`, forzando a cada subclase a implementar su propio algoritmo de cálculo.
+2. **Interfaces y Desacoplamiento:** Se implementan tres contratos de comportamiento en las subclases para extender capacidades funcionales sin afectar la jerarquía de herencia:
+    * `Despachable`: Modela la acción de envío mediante `despachar()`.
+    * `Cancelable`: Modela el flujo de anulación con `cancelar()`.
+    * `Rastreable`: Permite consultar el estado final con `verHistorial()`.
+3. **Encapsulamiento:** La superclase `Pedido` protege sus atributos (`idPedido`, `direccionEntrega`, `distanciaKm`, `repartidor`) combinando visibilidad `private` y `protected`, expuestos mediante getters y setters.
+4. **Herencia:** `PedidoComida`, `PedidoEncomienda` y `PedidoExpress` extienden de `Pedido`, reutilizando la lógica base mediante la instrucción `super()`.
+5. **Polimorfismo por Sobrescritura (`@Override`):** Redefinición del método sin parámetros `asignarRepartidor()` para la asignación automática en cada clase derivada.
+6. **Polimorfismo por Sobrecarga:** Inclusión del método `asignarRepartidor(String nombre)` para permitir la asignación manual de repartidores.
 
 ---
 
@@ -36,11 +40,14 @@ El sistema utiliza la jerarquía de clases para personalizar el proceso de asign
 
 ```text
 src/
- ├── Pedido.java           # Clase base abstracta/superclase con atributos y métodos genéricos
- ├── PedidoComida.java     # Subclase especializada en pedidos de restaurantes
- ├── PedidoEncomienda.java # Subclase especializada en documentos y paquetes
- ├── PedidoExpress.java    # Subclase especializada en compras rápidas (supermercado/farmacia)
- └── Main.java             # Clase principal con punto de entrada (main) para pruebas
+ ├── Cancelable.java        # Interfaz para anulación de pedidos
+ ├── Despachable.java       # Interfaz para el despacho de envíos
+ ├── Rastreable.java        # Interfaz para consulta de historial
+ ├── Pedido.java            # Clase base abstracta con lógica general y cálculos requeridos
+ ├── PedidoComida.java      # Subclase especializada en alimentos
+ ├── PedidoEncomienda.java  # Subclase especializada en paquetes y carga
+ ├── PedidoExpress.java     # Subclase especializada en entregas prioritarias
+ └── Main.java              # Clase principal con la simulación completa del sistema
 ```
 
 ---
@@ -49,31 +56,34 @@ src/
 
 Al ejecutar la clase `Main.java`, el sistema genera la siguiente salida formateada:
 
-```text
-=== DEMOSTRACIÓN DE SOBRECARGA (MÉTODO CON PARÁMETRO) ===
-[Pedido comida] Asignando repartidor...
-→ Verificando mochila térmica... OK
-→ Pedido asignado a: Juan Pérez
+PEDIDO EXPRESS---
+Se asignó a Mario para la entrega de tu pedido express #3
+---N° pedido #: 3
+---Dirección de entrega: calle Miraflores
+---Distancia (KM): 7
+---Tiempo de entrega : 15 minutos.
+Su pedido #3 ha sido enviado de manera prioritaria.
 
-[Encomienda] Asignando repartidor...
-→ Validando peso y embalaje... OK
-→ Pedido asignado a: Camila Soto
+ENCOMIENDA---
+Se asignó a Francisca para la entrega de tu encomienda número #2
+---N° pedido #: 2
+---Dirección de entrega: av. Vicuña Mackenna
+---Distancia (KM): 6
+---Tiempo de entrega : 29 minutos.
+Su encomienda numero #2 ha salido de nuestro centro de distribución.
 
-[Pedido express] Asignando repartidor...
-→ Repartidor más cercano con disponibilidad inmediata encontrado.
-→ Pedido asignado a: Luis Díaz
+PEDIDO COMIDA---
+Se asignó a Eduardo para la entrega de tu pedido número #1
+---N° pedido #: 1
+---Dirección de entrega: Los maitenes
+---Distancia (KM): 3
+---Tiempo de entrega : 21 minutos.
+Su pedido de comida numero #1 va en camino a su destino.
 
-=== DEMOSTRACIÓN DE POLIMORFISMO Y SOBRESCRITURA ===
-[Pedido comida] Asignando repartidor...
-→ Verificando mochila térmica... OK
-
-[Encomienda] Asignando repartidor...
-→ Validando peso y embalaje... OK
-
-[Pedido express] Asignando repartidor...
-→ Repartidor más cercano con disponibilidad inmediata encontrado.
-```
-
+HISTORIAL
+Su pedido #3 Ha sido entregado por Mario
+Su pedido #2 Ha sido entregado por Francisca
+Su pedido #1 Ha sido entregado por Eduardo
 ---
 
 ## ⚙️ Requisitos y Entorno de Ejecución
