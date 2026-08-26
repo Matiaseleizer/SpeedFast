@@ -1,5 +1,5 @@
 
-public class PedidoExpress extends Pedido{
+public class PedidoExpress extends Pedido implements Despachable, Cancelable, Rastreable{
 
     public PedidoExpress(int idPedido, String direccionEntrega, int distanciaKm) {
         super(idPedido, direccionEntrega, distanciaKm);
@@ -12,6 +12,35 @@ public class PedidoExpress extends Pedido{
         }else{
             return 10 ;
         }
+    }
+
+    //Sobreescritura, se asignó el metodo asignarRepartidor a PedidoExpress
+    @Override
+    public void asignarRepartidor(){
+        this.repartidor = "Repartidor Express";
+        System.out.println("Se asignó un repartidor express para el pedido: #" + getIdPedido());
+    }
+
+    //Sobrecarga del metodo asignarRepartidor en la clase PedidoExpress
+    public void asignarRepartidor(String nombre){
+        this.repartidor = nombre;
+        System.out.println("Se asignó a " + nombre + " para la entrega de tu pedido express #" + getIdPedido());
+    }
+
+    //Metodos de las interfaces
+    @Override
+    public void cancelar(){
+        System.out.println("Su pedido #" + getIdPedido() + " ha sido cancelado.");
+    }
+
+    @Override
+    public void despachar(){
+        System.out.println("Su pedido #" + getIdPedido() + " ha sido enviado de manera prioritaria.");
+    }
+
+    @Override
+    public void verHistorial(){
+        System.out.println("Su pedido #" + getIdPedido() + " Ha sido entregado por " + getRepartidor());
     }
 
 }
